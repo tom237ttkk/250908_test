@@ -1,11 +1,17 @@
 import 'dotenv/config';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { PrismaClient } from '@prisma/client';
+import { createApi } from './api';
 
 const app = new Hono();
 const prisma = new PrismaClient();
 
+// CORS (dev: allow all)
+app.use('/*', cors());
+
+// health
 app.get('/health', (c) => c.json({ ok: true }));
 app.get('/', (c) => c.text('SFL API: up'));
 app.get('/health/db', async (c) => {
@@ -16,6 +22,14 @@ app.get('/health/db', async (c) => {
     return c.json({ db: 'down', error: String(e) }, 500);
   }
 });
+
+// API routes
+const api = createApi(prisma);
+app.route('/api', api);
+
+// not found / error handlers
+app.notFound((c) => c.json({ message: 'Not Found' }, 404));
+app.onError((err, c) => c.json({ message: 'Internal Error', detail: String(err) }, 500));
 
 const port = Number(process.env.PORT || 8787);
 
