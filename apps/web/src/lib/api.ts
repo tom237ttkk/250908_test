@@ -24,7 +24,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   let response: Response;
   try {
-    response = await fetch(endpoint, init);
+    response = await fetch(endpoint, {
+      ...init,
+    });
   } catch (error) {
     throw new ApiError('Network request failed.', 0);
   }
@@ -49,18 +51,21 @@ async function extractErrorMessage(response: Response): Promise<string> {
   return response.statusText || 'Unexpected error occurred.';
 }
 
-export async function fetchVideos(filters?: VideoFilters): Promise<Video[]> {
+export async function fetchVideos(
+  filters?: VideoFilters,
+  init?: RequestInit,
+): Promise<Video[]> {
   const params = createVideoFilterSearchParams(filters);
   const query = params.toString();
   const suffix = query.length > 0 ? `?${query}` : '';
 
-  return request<Video[]>(`${ROUTES.videos}${suffix}`);
+  return request<Video[]>(`${ROUTES.videos}${suffix}`, init);
 }
 
-export async function fetchVideoById(id: string): Promise<Video> {
-  return request<Video>(ROUTES.videoById(id));
+export async function fetchVideoById(id: string, init?: RequestInit): Promise<Video> {
+  return request<Video>(ROUTES.videoById(id), init);
 }
 
-export async function fetchTeams(): Promise<Team[]> {
-  return request<Team[]>(ROUTES.teams);
+export async function fetchTeams(init?: RequestInit): Promise<Team[]> {
+  return request<Team[]>(ROUTES.teams, init);
 }
