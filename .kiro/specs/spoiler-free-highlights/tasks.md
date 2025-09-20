@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. プロジェクト初期設定とコア構造の構築
+- [x] 1. プロジェクト初期設定とコア構造の構築
 
   - Vite + React + TypeScript プロジェクトの初期化
   - Tailwind CSS の設定
