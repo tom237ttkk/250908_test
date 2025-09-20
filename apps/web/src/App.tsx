@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Link, Outlet, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import VideoPage from './pages/VideoPage';
 
@@ -6,11 +6,23 @@ function Layout() {
   return (
     <div className="min-h-dvh bg-gray-50 text-gray-900">
       <header className="border-b bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-3">
-          <h1 className="text-lg font-semibold">Spoiler-Free Highlights</h1>
-          <p className="text-sm text-gray-500">
-            Stay up to date without revealing final scores.
-          </p>
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+          <div>
+            <Link to="/" className="text-lg font-semibold text-gray-900 hover:text-blue-600">
+              Spoiler-Free Highlights
+            </Link>
+            <p className="text-sm text-gray-500">
+              最新のハイライトをネタバレなしでチェック
+            </p>
+          </div>
+          <nav className="flex items-center gap-4 text-sm font-medium text-gray-600">
+            <Link to="/" className="hover:text-blue-600">
+              ホーム
+            </Link>
+            <Link to="/videos/sample" className="hover:text-blue-600">
+              デモ動画
+            </Link>
+          </nav>
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-6">
