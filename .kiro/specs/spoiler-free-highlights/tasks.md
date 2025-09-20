@@ -33,7 +33,7 @@
   - _Requirements: 1.1, 1.2, 2.1, 4.3_
 
 - [ ] 3. フロントエンド基盤コンポーネントの実装
-- [ ] 3.1 TypeScript 型定義とユーティリティの作成
+- [x] 3.1 TypeScript 型定義とユーティリティの作成
 
   - Video, Team, VideoFilters インターフェースの定義
   - API 通信ユーティリティ関数の実装
