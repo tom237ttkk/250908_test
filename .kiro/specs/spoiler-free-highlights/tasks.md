@@ -16,7 +16,7 @@
   - 基本的な API サーバーの起動確認
   - _Requirements: 4.1_
 
-- [ ] 2.2 Prisma + PostgreSQL の設定
+- [x] 2.2 Prisma + PostgreSQL の設定
 
   - Prisma ORM の初期化
   - PostgreSQL データベースの設定

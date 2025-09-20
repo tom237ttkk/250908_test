@@ -9,9 +9,8 @@ services:
       POSTGRES_PASSWORD: sfl
       POSTGRES_DB: sfl
     ports:
-      - '5432:5432'
+      - '55432:5432'
     volumes:
       - sfl_pg_data:/var/lib/postgresql/data
 volumes:
   sfl_pg_data:
-
