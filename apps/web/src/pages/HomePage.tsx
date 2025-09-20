@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import VideoGrid from '../components/VideoGrid';
+import { useVideos } from '../hooks/useVideos';
 import type { VideoFilters } from '../types';
 
 function parseFilters(params: URLSearchParams): VideoFilters {
@@ -17,6 +19,7 @@ function parseFilters(params: URLSearchParams): VideoFilters {
 export default function HomePage() {
   const [searchParams] = useSearchParams();
   const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
+  const { videos, loading, error, refetch } = useVideos(filters);
 
   return (
     <div className="space-y-6">
@@ -37,7 +40,7 @@ export default function HomePage() {
           </Link>
         </header>
 
-        <dl className="mt-6 grid gap-4 text-sm text-gray-600 sm:grid-cols-3">
+        <dl className="mt-6 grid gap-4 text-sm text-gray-600 sm:grid-cols-4">
           <div>
             <dt className="font-medium text-gray-700">対象チーム</dt>
             <dd>{filters.team ?? 'すべてのチーム'}</dd>
@@ -50,6 +53,12 @@ export default function HomePage() {
             <dt className="font-medium text-gray-700">終了日</dt>
             <dd>{filters.dateTo ?? '指定なし'}</dd>
           </div>
+          <div>
+            <dt className="font-medium text-gray-700">取得件数</dt>
+            <dd>
+              {loading ? '読込中…' : `${videos.length.toString()} 件`}
+            </dd>
+          </div>
         </dl>
       </section>
 
@@ -60,10 +69,14 @@ export default function HomePage() {
         </p>
       </section>
 
-      <section className="rounded-md border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
-        <p className="text-sm text-gray-500">
-          VideoGrid コンポーネントがここに表示され、条件に合致する動画カードをグリッドで並べます。
-        </p>
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-gray-900">ハイライト一覧</h3>
+          <div className="text-xs text-gray-500">
+            {loading ? '最新の動画を読み込み中…' : `表示中: ${videos.length.toString()} 件`}
+          </div>
+        </div>
+        <VideoGrid videos={videos} isLoading={loading} error={error} onRetry={refetch} />
       </section>
     </div>
   );
