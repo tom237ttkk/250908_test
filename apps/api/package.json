@@ -8,18 +8,23 @@
     "dev:bun": "bun --hot src/index.ts",
     "start": "node --enable-source-maps ./dist/index.js",
     "build": "tsc -p .",
+    "db:up": "docker compose up -d db || docker-compose up -d db",
+    "db:down": "docker compose down || docker-compose down",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
     "format": "biome format --write .",
     "lint": "biome lint --reporter=summary .",
     "check": "biome check --reporter=summary ."
   },
   "dependencies": {
     "hono": "^4.6.18",
-    "@hono/node-server": "^1.13.1"
+    "@hono/node-server": "^1.13.1",
+    "@prisma/client": "^5.20.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "typescript": "^5.5.4",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "prisma": "^5.20.0"
   }
 }
-
