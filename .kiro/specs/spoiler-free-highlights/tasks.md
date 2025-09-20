@@ -8,15 +8,15 @@
   - 基本的なディレクトリ構造の作成
   - _Requirements: 全体的な基盤_
 
-- [ ] 2. バックエンド基盤の構築
-- [ ] 2.1 Hono + Bun プロジェクトの初期化
+- [x] 2. バックエンド基盤の構築
+- [x] 2.1 Hono + Bun プロジェクトの初期化
 
   - Hono フレームワークのセットアップ
   - Bun ランタイムの設定
   - 基本的な API サーバーの起動確認
   - _Requirements: 4.1_
 
-- [ ] 2.2 Prisma + PostgreSQL の設定
+- [x] 2.2 Prisma + PostgreSQL の設定
 
   - Prisma ORM の初期化
   - PostgreSQL データベースの設定
@@ -24,7 +24,7 @@
   - データベースマイグレーションの実行
   - _Requirements: 1.1, 1.2, 2.1_
 
-- [ ] 2.3 基本的な API エンドポイントの実装
+- [x] 2.3 基本的な API エンドポイントの実装
 
   - GET /api/videos エンドポイントの作成
   - GET /api/videos/:id エンドポイントの作成
