@@ -77,17 +77,47 @@ export function formatDuration(durationSeconds?: number): string {
 }
 
 export function createVideoFilterSearchParams(filters: VideoFilters = {}): URLSearchParams {
+  const sanitized = sanitizeVideoFilters(filters);
   const params = new URLSearchParams();
 
-  if (filters.team) {
-    params.set('team', filters.team);
+  if (sanitized.team) {
+    params.set('team', sanitized.team);
   }
-  if (filters.dateFrom) {
-    params.set('dateFrom', filters.dateFrom);
+  if (sanitized.dateFrom) {
+    params.set('dateFrom', sanitized.dateFrom);
   }
-  if (filters.dateTo) {
-    params.set('dateTo', filters.dateTo);
+  if (sanitized.dateTo) {
+    params.set('dateTo', sanitized.dateTo);
   }
 
   return params;
+}
+
+export function sanitizeVideoFilters(filters: VideoFilters = {}): VideoFilters {
+  const sanitized: VideoFilters = {};
+
+  if (filters.team?.trim()) {
+    sanitized.team = filters.team.trim();
+  }
+  if (filters.dateFrom?.trim()) {
+    sanitized.dateFrom = filters.dateFrom.trim();
+  }
+  if (filters.dateTo?.trim()) {
+    sanitized.dateTo = filters.dateTo.trim();
+  }
+
+  return sanitized;
+}
+
+export function parseVideoFiltersFromSearchParams(params: URLSearchParams): VideoFilters {
+  return sanitizeVideoFilters({
+    team: params.get('team') ?? undefined,
+    dateFrom: params.get('dateFrom') ?? undefined,
+    dateTo: params.get('dateTo') ?? undefined,
+  });
+}
+
+export function hasActiveVideoFilters(filters: VideoFilters = {}): boolean {
+  const sanitized = sanitizeVideoFilters(filters);
+  return Boolean(sanitized.team || sanitized.dateFrom || sanitized.dateTo);
 }

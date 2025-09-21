@@ -1,6 +1,11 @@
 import type { Team, Video, VideoFilters } from '../types';
 import { createVideoFilterSearchParams } from './video-utils';
 
+type CollectionResponse<T> = {
+  items: T[];
+  totalCount?: number;
+};
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 const ROUTES = {
@@ -39,6 +44,16 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
+function toCollectionItems<T>(data: CollectionResponse<T> | T[]): T[] {
+  if (Array.isArray(data)) {
+    return data;
+  }
+  if (Array.isArray(data?.items)) {
+    return data.items;
+  }
+  return [];
+}
+
 async function extractErrorMessage(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as { message?: string };
@@ -59,7 +74,11 @@ export async function fetchVideos(
   const query = params.toString();
   const suffix = query.length > 0 ? `?${query}` : '';
 
-  return request<Video[]>(`${ROUTES.videos}${suffix}`, init);
+  const payload = await request<CollectionResponse<Video> | Video[]>(
+    `${ROUTES.videos}${suffix}`,
+    init,
+  );
+  return toCollectionItems(payload);
 }
 
 export async function fetchVideoById(id: string, init?: RequestInit): Promise<Video> {
@@ -67,5 +86,6 @@ export async function fetchVideoById(id: string, init?: RequestInit): Promise<Vi
 }
 
 export async function fetchTeams(init?: RequestInit): Promise<Team[]> {
-  return request<Team[]>(ROUTES.teams, init);
+  const payload = await request<CollectionResponse<Team> | Team[]>(ROUTES.teams, init);
+  return toCollectionItems(payload);
 }

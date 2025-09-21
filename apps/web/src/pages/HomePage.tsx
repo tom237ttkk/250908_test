@@ -1,25 +1,44 @@
 import { useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import FilterBar from '../components/FilterBar';
 import VideoGrid from '../components/VideoGrid';
 import { useVideos } from '../hooks/useVideos';
-import type { VideoFilters } from '../types';
-
-function parseFilters(params: URLSearchParams): VideoFilters {
-  const team = params.get('team') ?? undefined;
-  const dateFrom = params.get('dateFrom') ?? undefined;
-  const dateTo = params.get('dateTo') ?? undefined;
-
-  return {
-    team,
-    dateFrom,
-    dateTo,
-  };
-}
+import { useVideoFiltersState } from '../hooks/useVideoFilters';
+import { useTeams } from '../hooks/useTeams';
 
 export default function HomePage() {
-  const [searchParams] = useSearchParams();
-  const filters = useMemo(() => parseFilters(searchParams), [searchParams]);
-  const { videos, loading, error, refetch } = useVideos(filters);
+  const { filters, hasActiveFilters, setFilters, resetFilters } = useVideoFiltersState();
+  const { videos, loading: videosLoading, error: videosError, refetch } = useVideos(filters);
+  const { teams, loading: teamsLoading, error: teamsError } = useTeams();
+
+  const selectedTeamLabel = useMemo(() => {
+    if (!filters.team) {
+      return 'すべてのチーム';
+    }
+    const team = teams.find((candidate) => candidate.id === filters.team);
+    return team?.name ?? 'すべてのチーム';
+  }, [filters.team, teams]);
+
+  const summaryText = useMemo(() => {
+    if (!hasActiveFilters) {
+      return 'すべての条件でハイライトを表示しています。';
+    }
+
+    const parts: string[] = [];
+    if (filters.team) {
+      parts.push(`チーム: ${selectedTeamLabel}`);
+    }
+    if (filters.dateFrom) {
+      parts.push(`開始日: ${filters.dateFrom}`);
+    }
+    if (filters.dateTo) {
+      parts.push(`終了日: ${filters.dateTo}`);
+    }
+    return parts.join(' / ');
+  }, [filters.team, filters.dateFrom, filters.dateTo, hasActiveFilters, selectedTeamLabel]);
+
+  const isFilterBusy = teamsLoading || videosLoading;
+  const totalCountLabel = videosLoading ? '読み込み中…' : `${videos.length.toString()} 件`;
 
   return (
     <div className="space-y-6">
@@ -27,9 +46,7 @@ export default function HomePage() {
         <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">最新ハイライト</h2>
-            <p className="text-sm text-gray-600">
-              フィルターでチームや日付を選び、ネタバレなしの振り返りをチェックしましょう。
-            </p>
+            <p className="text-sm text-gray-600">フィルターで絞り込みながら、ネタバレなしの振り返りを楽しみましょう。</p>
           </div>
           <Link
             to="/videos/sample"
@@ -43,7 +60,7 @@ export default function HomePage() {
         <dl className="mt-6 grid gap-4 text-sm text-gray-600 sm:grid-cols-4">
           <div>
             <dt className="font-medium text-gray-700">対象チーム</dt>
-            <dd>{filters.team ?? 'すべてのチーム'}</dd>
+            <dd>{selectedTeamLabel}</dd>
           </div>
           <div>
             <dt className="font-medium text-gray-700">開始日</dt>
@@ -55,28 +72,30 @@ export default function HomePage() {
           </div>
           <div>
             <dt className="font-medium text-gray-700">取得件数</dt>
-            <dd>
-              {loading ? '読込中…' : `${videos.length.toString()} 件`}
-            </dd>
+            <dd>{totalCountLabel}</dd>
           </div>
         </dl>
+
+        <p className="mt-4 text-xs text-gray-500">{summaryText}</p>
       </section>
 
-      <section className="rounded-md border border-dashed border-gray-300 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900">FilterBar プレースホルダー</h3>
-        <p className="mt-2 text-sm text-gray-600">
-          ここにチーム選択や日付範囲を切り替えるフィルター UI を設置します。URL パラメーターとの同期仕様に対応予定です。
-        </p>
-      </section>
+      <FilterBar
+        filters={filters}
+        teams={teams}
+        isLoading={isFilterBusy}
+        error={teamsError}
+        onChange={setFilters}
+        onReset={resetFilters}
+      />
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">ハイライト一覧</h3>
           <div className="text-xs text-gray-500">
-            {loading ? '最新の動画を読み込み中…' : `表示中: ${videos.length.toString()} 件`}
+            {videosLoading ? '最新の動画を読み込み中…' : `表示中: ${videos.length.toString()} 件`}
           </div>
         </div>
-        <VideoGrid videos={videos} isLoading={loading} error={error} onRetry={refetch} />
+        <VideoGrid videos={videos} isLoading={videosLoading} error={videosError} onRetry={refetch} />
       </section>
     </div>
   );
