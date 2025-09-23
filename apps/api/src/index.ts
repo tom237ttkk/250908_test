@@ -33,15 +33,19 @@ app.onError((err, c) => c.json({ message: 'Internal Error', detail: String(err) 
 
 const port = Number(process.env.PORT || 8787);
 
-if ((globalThis as any).Bun) {
-  // Bun runtime
-  (globalThis as any).Bun.serve({
+type BunRuntime = {
+  serve: (options: { port: number; fetch: typeof app.fetch }) => void;
+};
+
+const globalRuntime = globalThis as typeof globalThis & { Bun?: BunRuntime };
+
+if (globalRuntime.Bun) {
+  globalRuntime.Bun.serve({
     port,
     fetch: app.fetch,
   });
   console.log(`[bun] listening on http://localhost:${port}`);
 } else {
-  // Node runtime
   serve({ fetch: app.fetch, port });
   console.log(`[node] listening on http://localhost:${port}`);
 }

@@ -8,23 +8,31 @@ datasource db {
 }
 
 model Team {
-  id        String   @id @default(uuid())
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  videos    Video[]
+  id         String   @id @default(uuid())
+  name       String
+  slug       String   @unique
+  shortName  String
+  logoUrl    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  homeVideos Video[]  @relation("HomeTeam")
+  awayVideos Video[]  @relation("AwayTeam")
 }
 
 model Video {
-  id        String   @id @default(uuid())
-  title     String
-  youtubeId String   @unique
-  url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // relation
-  teamId String?
-  team   Team?    @relation(fields: [teamId], references: [id])
-}
+  id           String   @id @default(uuid())
+  title        String
+  videoUrl     String
+  videoType    String   @default("youtube")
+  thumbnailUrl String?
+  matchDate    DateTime
+  duration     Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  homeTeamId   String
+  awayTeamId   String
+  homeTeam     Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam     Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
 
+  @@index([matchDate], map: "Video_matchDate_idx")
+}

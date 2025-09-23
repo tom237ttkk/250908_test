@@ -40,8 +40,11 @@ export function useVideos(filters?: VideoFilters): UseVideosResult {
         return;
       }
 
-      const message = error instanceof Error ? error.message : '動画の取得に失敗しました。';
-      setState({ videos: [], loading: false, error: message });
+      const fallback = '動画の取得に失敗しました。';
+      const message = error instanceof Error ? error.message : fallback;
+      const localizedMessage = message === 'Network request failed.' ? fallback : message;
+
+      setState({ videos: [], loading: false, error: localizedMessage });
     }
   }, [filters]);
 

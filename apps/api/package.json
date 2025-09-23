@@ -15,21 +15,24 @@
     "prisma:seed": "prisma db seed",
     "format": "biome format --write .",
     "lint": "biome lint --reporter=summary .",
-    "check": "biome check --reporter=summary ."
+    "check": "biome check --reporter=summary .",
+    "test": "vitest"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "hono": "^4.6.18",
     "@hono/node-server": "^1.13.1",
     "@prisma/client": "^5.20.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "hono": "^4.6.18"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "typescript": "^5.5.4",
+    "@types/node": "^24.5.2",
+    "prisma": "^5.20.0",
     "tsx": "^4.19.2",
-    "prisma": "^5.20.0"
+    "typescript": "^5.5.4",
+    "vitest": "^3.2.4"
   }
 }
