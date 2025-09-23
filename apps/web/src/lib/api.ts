@@ -6,6 +6,8 @@ type CollectionResponse<T> = {
   totalCount?: number;
 };
 
+type SingleResponse<T> = T | { item?: T | null } | { data?: T | null };
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 const ROUTES = {
@@ -54,6 +56,22 @@ function toCollectionItems<T>(data: CollectionResponse<T> | T[]): T[] {
   return [];
 }
 
+function toSingleItem<T>(data: SingleResponse<T>): T {
+  if (data && typeof data === 'object') {
+    const withItem = (data as { item?: T | null }).item;
+    if (withItem) {
+      return withItem;
+    }
+
+    const withData = (data as { data?: T | null }).data;
+    if (withData) {
+      return withData;
+    }
+  }
+
+  return data as T;
+}
+
 async function extractErrorMessage(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as { message?: string };
@@ -82,7 +100,8 @@ export async function fetchVideos(
 }
 
 export async function fetchVideoById(id: string, init?: RequestInit): Promise<Video> {
-  return request<Video>(ROUTES.videoById(id), init);
+  const payload = await request<SingleResponse<Video>>(ROUTES.videoById(id), init);
+  return toSingleItem(payload);
 }
 
 export async function fetchTeams(init?: RequestInit): Promise<Team[]> {

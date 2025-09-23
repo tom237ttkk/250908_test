@@ -84,15 +84,15 @@
   - フィルター状態のリセット機能
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 6. YouTube 動画プレイヤーの実装
-- [ ] 6.1 YouTubePlayer コンポーネントの作成
+- [x] 6. YouTube 動画プレイヤーの実装
+- [x] 6.1 YouTubePlayer コンポーネントの作成
 
   - YouTube 埋め込み iframe の実装
   - 動画 URL の YouTube 埋め込み形式への変換
   - プレイヤーのレスポンシブ対応
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [ ] 6.2 VideoPlayer コンポーネントの実装
+- [x] 6.2 VideoPlayer コンポーネントの実装
 
   - 動画タイプに応じたプレイヤーの切り替え
   - 将来の拡張性を考慮した設計
