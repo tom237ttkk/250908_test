@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import VideoPlayer from '../components/VideoPlayer';
 import { formatDuration, formatMatchDate } from '../lib/video-utils';
 import { useVideo } from '../hooks/useVideo';
@@ -7,12 +7,17 @@ import { useVideo } from '../hooks/useVideo';
 const PROVIDER_LABEL: Record<string, string> = {
   youtube: 'YouTube',
   vimeo: 'Vimeo',
-  direct: 'Direct',
+  direct: 'Direct 再生',
 };
 
 export default function VideoPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+
+  if (!id) {
+    return <Navigate to="/" replace />;
+  }
+
   const { video, loading, error, refetch } = useVideo(id);
 
   const handleBack = useCallback(() => {
@@ -33,6 +38,8 @@ export default function VideoPage() {
     }
     return undefined;
   }, [loading, error]);
+
+  const isEmptyState = !loading && !error && !video;
 
   return (
     <div className="space-y-6">
@@ -78,6 +85,15 @@ export default function VideoPage() {
               </button>
             </div>
           ) : null}
+
+          {isEmptyState ? (
+            <div className="flex items-center justify-between rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700">
+              <span>該当するハイライトが見つかりませんでした。</span>
+              <Link to="/" className="font-medium underline">
+                ホームに戻る
+              </Link>
+            </div>
+          ) : null}
         </div>
 
         <dl className="mt-6 grid gap-4 text-sm text-gray-700 sm:grid-cols-3">
@@ -103,6 +119,15 @@ export default function VideoPage() {
         <p className="mt-2 text-sm text-gray-600">
           チーム情報や追加の試合データが整い次第、このセクションで詳しく紹介します。
         </p>
+        <div className="mt-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-500"
+          >
+            ホームに戻って他のハイライトを見る
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
       </section>
     </div>
   );

@@ -15,7 +15,9 @@ interface VideoCardProps {
 export default function VideoCard({ video }: VideoCardProps) {
   const matchDate = formatMatchDate(video.matchDate) || '日付未定';
   const duration = formatDuration(video.duration) || '時間未定';
-  const headline = `${video.homeTeam} vs ${video.awayTeam}`;
+  const safeHomeTeam = video.homeTeam?.trim() || 'ホームチーム未定';
+  const safeAwayTeam = video.awayTeam?.trim() || 'アウェイチーム未定';
+  const headline = `${safeHomeTeam} vs ${safeAwayTeam}`;
   const provider = PROVIDER_LABEL[video.videoType] ?? 'Video';
 
   return (

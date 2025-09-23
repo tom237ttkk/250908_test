@@ -100,14 +100,14 @@
   - _Requirements: 3.1, 3.2_
 
 - [ ] 7. ページ統合とナビゲーション
-- [ ] 7.1 HomePage の完成
+- [x] 7.1 HomePage の完成
 
   - VideoGrid と FilterBar の統合
   - 動画一覧の表示とフィルタリング機能
   - 動画詳細ページへのナビゲーション
   - _Requirements: 1.1, 1.3, 2.1_
 
-- [ ] 7.2 VideoPage の完成
+- [x] 7.2 VideoPage の完成
 
   - VideoPlayer コンポーネントの統合
   - 動画詳細情報の表示
