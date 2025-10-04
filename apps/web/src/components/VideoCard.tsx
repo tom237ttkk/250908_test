@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDuration, formatMatchDate } from '../lib/video-utils';
 import type { Video } from '../types';
@@ -12,13 +13,19 @@ interface VideoCardProps {
   video: Video;
 }
 
-export default function VideoCard({ video }: VideoCardProps) {
-  const matchDate = formatMatchDate(video.matchDate) || '日付未定';
-  const duration = formatDuration(video.duration) || '時間未定';
-  const safeHomeTeam = video.homeTeam?.trim() || 'ホームチーム未定';
-  const safeAwayTeam = video.awayTeam?.trim() || 'アウェイチーム未定';
-  const headline = `${safeHomeTeam} vs ${safeAwayTeam}`;
-  const provider = PROVIDER_LABEL[video.videoType] ?? 'Video';
+function VideoCardComponent({ video }: VideoCardProps) {
+  const { matchDate, duration, headline, provider } = useMemo(() => {
+    const computedMatchDate = formatMatchDate(video.matchDate) || '日付未定';
+    const computedDuration = formatDuration(video.duration) || '時間未定';
+    const safeHomeTeam = video.homeTeam?.trim() || 'ホームチーム未定';
+    const safeAwayTeam = video.awayTeam?.trim() || 'アウェイチーム未定';
+    return {
+      matchDate: computedMatchDate,
+      duration: computedDuration,
+      headline: `${safeHomeTeam} vs ${safeAwayTeam}`,
+      provider: PROVIDER_LABEL[video.videoType] ?? 'Video',
+    };
+  }, [video.awayTeam, video.duration, video.homeTeam, video.matchDate, video.videoType]);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-lg border bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -29,6 +36,7 @@ export default function VideoCard({ video }: VideoCardProps) {
             alt={`${headline} のハイライト`}
             className="h-full w-full object-cover transition group-hover:opacity-90"
             loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-sm text-gray-500">
@@ -62,3 +70,7 @@ export default function VideoCard({ video }: VideoCardProps) {
     </article>
   );
 }
+
+const VideoCard = memo(VideoCardComponent);
+
+export default VideoCard;
