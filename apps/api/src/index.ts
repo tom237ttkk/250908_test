@@ -37,10 +37,10 @@ type BunRuntime = {
   serve: (options: { port: number; fetch: typeof app.fetch }) => void;
 };
 
-const globalRuntime = globalThis as typeof globalThis & { Bun?: BunRuntime };
+const runtime = globalThis as typeof globalThis & { Bun?: BunRuntime };
 
-if (globalRuntime.Bun) {
-  globalRuntime.Bun.serve({
+if (runtime.Bun) {
+  runtime.Bun.serve({
     port,
     fetch: app.fetch,
   });

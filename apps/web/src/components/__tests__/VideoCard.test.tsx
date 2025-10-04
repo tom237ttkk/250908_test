@@ -24,7 +24,7 @@ describe('VideoCard', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /Arsenal vs City/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /arsenal vs city/i })).toBeInTheDocument();
     expect(screen.getByText(/Arsenal FC vs Manchester City/)).toBeInTheDocument();
     expect(screen.getByText(/YouTube/i)).toBeInTheDocument();
     expect(screen.getByText(/ハイライトを見る/)).toBeInTheDocument();
