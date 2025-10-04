@@ -24,10 +24,12 @@ export default function VideoPage() {
     navigate(-1);
   }, [navigate]);
 
+  const safeHomeTeam = video?.homeTeam?.trim() || 'ホームチーム未定';
+  const safeAwayTeam = video?.awayTeam?.trim() || 'アウェイチーム未定';
   const matchDateLabel = video?.matchDate ? formatMatchDate(video.matchDate) : '未設定';
   const durationLabel = video?.duration ? formatDuration(video.duration) : '未設定';
   const providerLabel = video ? PROVIDER_LABEL[video.videoType] ?? '未設定' : '未設定';
-  const headline = video ? `${video.homeTeam} vs ${video.awayTeam}` : '対戦カード情報は未設定です。';
+  const headline = video ? `${safeHomeTeam} vs ${safeAwayTeam}` : '対戦カード情報は未設定です。';
 
   const statusMessage = useMemo(() => {
     if (loading) {
