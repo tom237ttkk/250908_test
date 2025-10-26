@@ -5,13 +5,10 @@
 ## セットアップ
 
 1. Node.js 18+ を用意
-2. 依存関係をインストール
-   - `npm i` または `pnpm i`（推奨のパッケージマネージャーは任意）
-3. 開発サーバー起動
-   - `npm run dev`
-4. ビルド / プレビュー
-   - `npm run build`
-   - `npm run preview`
+2. 依存関係をインストール（`npm install`）
+3. `.env.example` を `.env` にコピーし、`VITE_API_BASE_URL` をバックエンド URL（例: `http://localhost:8787`）に設定
+4. 開発サーバー起動: `npm run dev`
+5. ビルド / プレビュー: `npm run build` → `npm run preview`
 
 ## 開発ルール（抜粋）
 

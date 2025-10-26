@@ -142,3 +142,47 @@
   - 動画読み込みエラー時の代替表示
   - ローディング状態の改善
   - _Requirements: 4.3_
+
+# 追加改修\_251026
+
+## 現状整理
+
+バックエンドは Hono + Node/Bun 構成で、Prisma 経由で PostgreSQL に接続する前提です。起動ポートは PORT 未指定時 8787 で、ヘルスチェック (/health, /health/db) と /api/\* ルートが用意されています。
+
+PostgreSQL は docker-compose.yml でユーザー/パスワードとも sfl、ホスト側 55432 ポートに公開されています。
+
+Prisma スキーマは DATABASE_URL 環境変数経由の接続を要求し、Team と Video テーブルを作成します。
+
+バックエンドの npm スクリプトには DB 起動・停止、マイグレーション、シード投入が揃っているので、これらを順に実行することでローカル環境を構築できます。
+
+フロントエンドは Vite + React + TypeScript 構成で、npm run dev で 5173 番ポートに開発サーバーを立ち上げる想定です。
+
+フロントの API クライアントは VITE_API_BASE_URL を参照してバックエンドへアクセスします。未設定の場合はフロントのオリジンに対してリクエストするため、環境変数を明示する必要があります。
+
+## ローカル起動に必要な手順
+
+apps/api 直下に .env を作成し、DATABASE_URL=postgresql://sfl:sfl@localhost:55432/sfl のように接続文字列を定義する（Prisma が必須とするため）。
+
+npm run db:up で PostgreSQL コンテナを起動する。
+
+npm run prisma:migrate → npm run prisma:seed を実行し、テーブル作成とサンプルデータ投入を行う。
+
+npm run dev（または npm run dev:bun）で API サーバーを起動する。
+
+apps/web 直下に .env を作成し、VITE_API_BASE_URL=http://localhost:8787 を設定したうえで npm run dev を実行し、フロントから API を呼び出す。
+
+## 現時点の不足点・注意点
+
+データモデル不整合: フロントエンドが期待する Video / Team 形（videoUrl, homeTeam, shortName など）と、バックエンドが返す Prisma モデル（url, team.slug など）が一致していません。このままでは取得したレスポンスをそのまま UI に渡すと欠落プロパティによる表示崩れが発生します。レスポンス整形または型定義の見直しが必要です。
+
+環境変数の雛形: .env.example が存在しないため、開発者間で設定値を共有する仕組みが未整備です（作成を検討）。
+
+動作確認フローの未整備: 上記の型ギャップを解消しない限り、フロントからバックエンドへ実リクエストして完全な画面確認を行うことは困難です。API 側でフロント用にフィールドを補うか、フロントで受け取ったデータを正規化する実装が追加で必要です。
+
+以上より、インフラ面（DB 起動～サーバー立ち上げ）は整備済みですが、フロントとバックのデータフォーマットを揃えるタスクが残っており、現状ではその調整を行わないと「起動して画面確認」までは至りません。
+
+## 対応方針
+
+- 環境変数テンプレートを整備する: `apps/api/.env.example` と `apps/web/.env.example` を用意し、接続情報 (`DATABASE_URL`, `VITE_API_BASE_URL` など) を明示化する。README にセットアップ手順を追記して、開発者が迷わずローカル検証できる状態にする。
+- 初期化スクリプトの追加: `npm run db:up && npm run prisma:migrate && npm run prisma:seed` をまとめたセットアップコマンドを提供し、初回構築やリセットを容易にする。必要に応じて CI での実行も検討する。
+- データ整合の解消: API 側で `videoUrl` や `homeTeam` などのフィールドを返すようレスポンス整形を行うか、フロントエンドで受信データを正規化するアダプタ層を実装して、UI の表示崩れを防ぐ。
