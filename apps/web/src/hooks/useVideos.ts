@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchVideos } from "../lib/api";
-import { createVideoFilterSearchParams } from "../lib/video-utils";
+import {
+  createVideoFilterSearchParams,
+  sanitizeVideoFilters,
+} from "../lib/video-utils";
 import type { Video, VideoFilters } from "../types";
 
 interface UseVideosState {
@@ -55,7 +58,14 @@ export function useVideos(
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const useCache = options.useCache ?? true;
-  const cacheKey = useMemo(() => createCacheKey(filters), [filters]);
+  const normalizedFilters = useMemo(
+    () => sanitizeVideoFilters(filters),
+    [filters?.team ?? "", filters?.dateFrom ?? "", filters?.dateTo ?? ""],
+  );
+  const cacheKey = useMemo(
+    () => createCacheKey(normalizedFilters),
+    [normalizedFilters],
+  );
 
   const applyCache = useCallback(() => {
     if (!useCache) {
@@ -86,7 +96,7 @@ export function useVideos(
       }));
 
       try {
-        const videos = await fetchVideos(filters, {
+        const videos = await fetchVideos(normalizedFilters, {
           signal: controller.signal,
         });
         if (useCache) {
@@ -107,7 +117,7 @@ export function useVideos(
         setState({ videos: [], loading: false, error: localizedMessage });
       }
     },
-    [applyCache, cacheKey, filters, useCache]
+    [applyCache, cacheKey, normalizedFilters, useCache]
   );
 
   useEffect(() => {
