@@ -1,5 +1,22 @@
 # Technology Stack
 
+## Project Overview
+
+```
+プロジェクト全体
+├── apps/web/          (フロントエンド)
+│   ├── パッケージマネージャー: Bun
+│   ├── ランタイム: Node.js (Viteが必要)
+│   ├── ビルドツール: Vite
+│   └── テスト: Vitest
+│
+└── apps/api/          (バックエンド)
+    ├── パッケージマネージャー: Bun
+    ├── ランタイム: Bun
+    ├── ビルドツール: TypeScript
+    └── テスト: Vitest
+```
+
 ## Frontend
 
 - **Framework**: React 18 with TypeScript
@@ -17,7 +34,7 @@
 ## Development Tools
 
 - **Code Quality**: Biome (formatter/linter)
-- **Package Manager**: npm (frontend), Bun (backend)
+- **Package Manager**: Bun
 
 ## Common Commands
 
@@ -26,7 +43,7 @@
 ```bash
 # Frontend development server
 cd apps/web
-npm run dev
+bun run dev
 
 # Backend development server
 cd apps/api
@@ -64,14 +81,14 @@ bun run db:down
 ```bash
 # Frontend tests
 cd apps/web
-npm test
+bun test
 
 # Backend tests
 cd apps/api
 bun test
 
 # Run tests in watch mode
-npm test -- --watch  # or bun test --watch
+bun test --watch
 ```
 
 ### Build & Deploy
@@ -79,13 +96,13 @@ npm test -- --watch  # or bun test --watch
 ```bash
 # Build frontend for production
 cd apps/web
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 
 # Type checking
-npm run build  # includes type checking
+bun run build  # includes type checking
 ```
 
 ## Architecture Patterns
