@@ -11,7 +11,7 @@
     "skipLibCheck": true,
     "noEmitOnError": true,
     "esModuleInterop": true,
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "bun-types"]
   },
   "include": ["src"],
   "exclude": ["tests"]

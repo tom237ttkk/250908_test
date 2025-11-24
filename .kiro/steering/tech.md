@@ -17,7 +17,7 @@
 ## Development Tools
 
 - **Code Quality**: Biome (formatter/linter)
-- **Package Manager**: Bun
+- **Package Manager**: npm (frontend), Bun (backend)
 
 ## Common Commands
 
@@ -25,55 +25,67 @@
 
 ```bash
 # Frontend development server
-bun run dev
+cd apps/web
+npm run dev
 
 # Backend development server
-bun run dev:server
+cd apps/api
+bun run dev
 
-# Run both frontend and backend
-bun run dev:full
+# Database setup (from apps/api)
+cd apps/api
+bun run setup
 ```
 
 ### Database
 
 ```bash
+# All commands run from apps/api directory
+cd apps/api
+
 # Generate Prisma client
-bunx prisma generate
+bun run prisma:generate
 
 # Run database migrations
-bunx prisma migrate dev
+bun run prisma:migrate
 
 # Seed database with sample data
-bunx prisma db seed
+bun run prisma:seed
 
-# Open Prisma Studio
-bunx prisma studio
+# Start database container
+bun run db:up
+
+# Stop database container
+bun run db:down
 ```
 
 ### Testing
 
 ```bash
-# Run unit tests
+# Frontend tests
+cd apps/web
+npm test
+
+# Backend tests
+cd apps/api
 bun test
 
-# Run E2E tests
-bun run test:e2e
-
 # Run tests in watch mode
-bun test --watch
+npm test -- --watch  # or bun test --watch
 ```
 
 ### Build & Deploy
 
 ```bash
 # Build frontend for production
-bun run build
+cd apps/web
+npm run build
 
 # Preview production build
-bun run preview
+npm run preview
 
 # Type checking
-bun run type-check
+npm run build  # includes type checking
 ```
 
 ## Architecture Patterns

@@ -3,14 +3,14 @@
 ## Root Directory Organization
 
 ```
-├── frontend/                 # React + Vite frontend application
-├── backend/                  # Hono + Bun backend API
-├── database/                 # Database migrations and seeds
+├── apps/
+│   ├── web/                  # React + Vite frontend application
+│   └── api/                  # Hono + Bun backend API
 ├── .kiro/                    # Kiro configuration and specs
-└── docs/                     # Project documentation
+└── AGENTS.md                 # Repository guidelines
 ```
 
-## Frontend Structure (`frontend/`)
+## Frontend Structure (`apps/web/`)
 
 ```
 src/
@@ -27,31 +27,21 @@ src/
 │   └── useVideos.tsx        # Video data fetching and management
 ├── types/                   # TypeScript type definitions
 │   └── index.ts             # Shared interfaces and types
-├── utils/                   # Utility functions
-│   ├── api.ts               # API communication helpers
-│   └── videoUtils.ts        # Video URL processing and platform detection
+├── lib/                     # Utility functions and helpers
 └── styles/                  # Global styles and Tailwind config
 ```
 
-## Backend Structure (`backend/`)
+## Backend Structure (`apps/api/`)
 
 ```
 src/
-├── routes/                  # API route handlers
-│   ├── videos.ts           # Video-related endpoints
-│   └── teams.ts            # Team data endpoints
-├── services/               # Business logic layer
-├── middleware/             # Custom middleware functions
-├── types/                  # Backend-specific types
-└── utils/                  # Server utilities
-```
+├── index.ts                 # Server entry point and route setup
+└── api.ts                   # API route handlers (videos, teams)
 
-## Database Structure (`database/`)
-
-```
-├── migrations/             # Prisma migration files
-├── seeds/                  # Database seed scripts
-└── schema.prisma          # Prisma schema definition
+prisma/
+├── migrations/              # Prisma migration files
+├── seed.ts                  # Database seed script
+└── schema.prisma           # Prisma schema definition
 ```
 
 ## Naming Conventions
