@@ -1,5 +1,22 @@
 # Technology Stack
 
+## Project Overview
+
+```
+プロジェクト全体
+├── apps/web/          (フロントエンド)
+│   ├── パッケージマネージャー: Bun
+│   ├── ランタイム: Node.js (Viteが必要)
+│   ├── ビルドツール: Vite
+│   └── テスト: Vitest
+│
+└── apps/api/          (バックエンド)
+    ├── パッケージマネージャー: Bun
+    ├── ランタイム: Bun
+    ├── ビルドツール: TypeScript
+    └── テスト: Vitest
+```
+
 ## Frontend
 
 - **Framework**: React 18 with TypeScript
@@ -25,39 +42,50 @@
 
 ```bash
 # Frontend development server
+cd apps/web
 bun run dev
 
 # Backend development server
-bun run dev:server
+cd apps/api
+bun run dev
 
-# Run both frontend and backend
-bun run dev:full
+# Database setup (from apps/api)
+cd apps/api
+bun run setup
 ```
 
 ### Database
 
 ```bash
+# All commands run from apps/api directory
+cd apps/api
+
 # Generate Prisma client
-bunx prisma generate
+bun run prisma:generate
 
 # Run database migrations
-bunx prisma migrate dev
+bun run prisma:migrate
 
 # Seed database with sample data
-bunx prisma db seed
+bun run prisma:seed
 
-# Open Prisma Studio
-bunx prisma studio
+# Start database container
+bun run db:up
+
+# Stop database container
+bun run db:down
 ```
 
 ### Testing
 
 ```bash
-# Run unit tests
+# Frontend tests
+cd apps/web
 bun test
 
-# Run E2E tests
-bun run test:e2e
+# Backend tests
+cd apps/api
+bun test
 
 # Run tests in watch mode
 bun test --watch
@@ -67,13 +95,14 @@ bun test --watch
 
 ```bash
 # Build frontend for production
+cd apps/web
 bun run build
 
 # Preview production build
 bun run preview
 
 # Type checking
-bun run type-check
+bun run build  # includes type checking
 ```
 
 ## Architecture Patterns
