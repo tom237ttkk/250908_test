@@ -1,13 +1,13 @@
-import VideoCard from './VideoCard';
-import type { Video } from '../types';
+import VideoCard from "./VideoCard";
+import type { Video } from "../types";
 
 const SKELETON_PLACEHOLDERS = [
-  'skeleton-1',
-  'skeleton-2',
-  'skeleton-3',
-  'skeleton-4',
-  'skeleton-5',
-  'skeleton-6',
+  "skeleton-1",
+  "skeleton-2",
+  "skeleton-3",
+  "skeleton-4",
+  "skeleton-5",
+  "skeleton-6",
 ];
 
 interface VideoGridProps {
@@ -17,10 +17,19 @@ interface VideoGridProps {
   onRetry?: () => void;
 }
 
-export default function VideoGrid({ videos, isLoading = false, error, onRetry }: VideoGridProps) {
+export default function VideoGrid({
+  videos,
+  isLoading = false,
+  error,
+  onRetry,
+}: VideoGridProps) {
   if (isLoading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite" aria-busy="true">
+      <div
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        aria-live="polite"
+        aria-busy="true"
+      >
         {SKELETON_PLACEHOLDERS.map((placeholderId) => (
           <div
             key={placeholderId}
@@ -38,7 +47,9 @@ export default function VideoGrid({ videos, isLoading = false, error, onRetry }:
         role="alert"
         aria-live="assertive"
       >
-        <p className="text-sm font-medium text-red-700">動画の取得に失敗しました。</p>
+        <p className="text-sm font-medium text-red-700">
+          動画の取得に失敗しました。
+        </p>
         <p className="text-xs text-red-600">{error}</p>
         {onRetry ? (
           <button
